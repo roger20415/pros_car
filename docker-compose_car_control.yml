@@ -12,6 +12,9 @@ services:
       - my_bridge_network
     ports:
       - "9090:9090"
+    devices:
+      - /dev/usb_rear_wheel:/dev/usb_rear_wheel
+      - /dev/usb_rear_wheel:/dev/usb_robot_arm
     command: ./car_control_for_docker_compose.sh
 
 networks:
