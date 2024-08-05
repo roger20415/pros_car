@@ -40,7 +40,9 @@ setup(
             'carD_writer = pros_car_py.carD_serial_writer:main',
             'arm_reader = pros_car_py.arm_reader:main',
             'arm_writer = pros_car_py.arm_writer:main',
-            'cv_bridge = pros_car_py.cv_bridge:main'
+            'cv_bridge = pros_car_py.cv_bridge:main',
+            'spot_keyboard = pros_car_py.spot_keyboard:main',
+            'ik = pros_car_py.spot_ik:main'
         ],
     },
 )
