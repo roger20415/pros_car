@@ -9,6 +9,77 @@ from std_msgs.msg import String
 from trajectory_msgs.msg import JointTrajectoryPoint
 from pros_car_py.env import *
 import math
+from pros_car_py import spider_utils
+
+
+_FORWARD_ROUTINE_ANGLES: dict[str, float] = {
+    "shoulder_down": 0,
+    "shoulder_flat": 15,
+    "shoulder_up": 40.0,
+    "calf_front": 35.0,
+    "calf_back": -35.0
+}
+
+FORWARD_ACTION: dict[str, list[float]] = {
+    "0": [
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+    ],
+
+    "1": [
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+
+    ],
+
+    "2": [
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_down"], 0,
+        _FORWARD_ROUTINE_ANGLES["shoulder_up"], 0,
+
+    ],
+
+    "3": [
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
+        _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
+]  
+}
+
 
 class SpiderKeyboardController(Node):
     def __init__(self, stdscr):
@@ -47,14 +118,14 @@ class SpiderKeyboardController(Node):
                     self.key_in_count += 1
                     self.print_basic_info(c)
                     #  以下都是機械手臂
-                    if c == ord('w'):
-                        self.handle_key_w()
-                    elif c == ord('s'):
-                        self.handle_key_s()
-                    elif c == ord('a'):
-                        self.handle_key_a()
-                    elif c == ord('d'):
-                        self.handle_key_d()
+                    if c == ord('0'):
+                        self.handle_key_0()
+                    elif c == ord('1'):
+                        self.handle_key_1()
+                    elif c == ord('2'):
+                        self.handle_key_2()
+                    elif c == ord('3'):
+                        self.handle_key_3()
                     elif c == ord('b'):
                         self.handle_key_b()
                     elif c == ord('q'):  # Exit on 'q'
@@ -94,38 +165,29 @@ class SpiderKeyboardController(Node):
         """限制值在一定範圍內"""
         return max(min_value, min(value, max_value))
 
-    def handle_key_w(self):
+    def handle_key_0(self):
         self.stdscr.addstr(f"spider walk...")
-        self.joint_pos = [math.radians(0), math.radians(180), 
-                          math.radians(0), math.radians(180), 
-                          math.radians(0), math.radians(180),
-                          math.radians(0), math.radians(180), 
-                          math.radians(0), math.radians(180), 
-                          math.radians(0), math.radians(180),
-                          math.radians(0), math.radians(180), 
-                          math.radians(0), math.radians(180)]
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(FORWARD_ACTION["0"])
         self.pub_arm()
 
         pass
 
-    def handle_key_s(self):
+    def handle_key_1(self):
         self.stdscr.addstr(f"spider walk...")
-        self.joint_pos = [math.radians(90), math.radians(0), 
-                          math.radians(90), math.radians(0), 
-                          math.radians(-90), math.radians(0),
-                          math.radians(-90), math.radians(0), 
-                          math.radians(-90), math.radians(0), 
-                          math.radians(-90), math.radians(0),
-                          math.radians(90), math.radians(0), 
-                          math.radians(90), math.radians(0)]
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(FORWARD_ACTION["1"])
         self.pub_arm()
         pass
 
-    def handle_key_a(self):
+    def handle_key_2(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(FORWARD_ACTION["2"])
+        self.pub_arm()
         pass
 
-    def handle_key_d(self):
-        pass
+    def handle_key_3(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(FORWARD_ACTION["3"])
+        self.pub_arm()
 
     def handle_key_b(self):
         self.stdscr.addstr(f"spider return to origin state...")

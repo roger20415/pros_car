@@ -4,7 +4,7 @@ from numpy.linalg import inv, norm
 from numpy import array, asarray, matrix
 from math import *
 # import matplotlib.pyplot as plt
-from pros_car_py.spot_util import RotMatrix3D, point_to_rad
+from pros_car_py.pros_car_py.spot_util import RotMatrix3D, point_to_rad
 import threading
 from trajectory_msgs.msg import JointTrajectoryPoint
 from std_msgs.msg import String
