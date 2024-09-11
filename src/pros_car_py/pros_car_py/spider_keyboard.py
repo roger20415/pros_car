@@ -13,11 +13,11 @@ from pros_car_py import spider_utils
 
 
 _FORWARD_ROUTINE_ANGLES: dict[str, float] = {
-    "shoulder_down": 0,
-    "shoulder_flat": 15,
-    "shoulder_up": 40.0,
-    "calf_front": 35.0,
-    "calf_back": -35.0
+    "shoulder_down": math.radians(0),
+    "shoulder_flat": math.radians(15),
+    "shoulder_up": math.radians(40.0),
+    "calf_front": math.radians(35.0),
+    "calf_back": math.radians(-35.0)
 }
 
 FORWARD_ACTION: dict[str, list[float]] = {
@@ -77,9 +77,75 @@ FORWARD_ACTION: dict[str, list[float]] = {
 
         _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_back"],
         _FORWARD_ROUTINE_ANGLES["shoulder_flat"], _FORWARD_ROUTINE_ANGLES["calf_front"],
-]  
+    ]  
 }
 
+_REDIRECT_ROUTINE_ANGLES: dict[str, float] = {
+    "shoulder_abduction": math.radians(25.0),
+    "shoulder_adduction": math.radians(-30.0),
+    "calf_front": math.radians(30),
+    "calf_back": math.radians(-30)
+}
+
+REDIRECT_ACTION: dict[str, list[float]] = {
+    "0": [
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
+        0, 0,
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
+        0, 0,
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0
+    ],
+
+    "1": [
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
+        0, 0,
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"],
+        0, 0,
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"]
+
+    ],
+
+    "2": [
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
+        0, 0,
+
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
+        0, 0,
+
+        0, 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
+
+        0, 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"]
+
+    ],
+
+    "3": [
+        0, 0,
+        0, 0,
+
+        0, 0,
+        0, 0,
+
+        0, 0,
+        0, 0,
+
+        0, 0,
+        0, 0
+    ]  
+}
 
 class SpiderKeyboardController(Node):
     def __init__(self, stdscr):
@@ -126,8 +192,14 @@ class SpiderKeyboardController(Node):
                         self.handle_key_2()
                     elif c == ord('3'):
                         self.handle_key_3()
-                    elif c == ord('b'):
-                        self.handle_key_b()
+                    elif c == ord('4'):
+                        self.handle_key_4()
+                    elif c == ord('5'):
+                        self.handle_key_5()
+                    elif c == ord('6'):
+                        self.handle_key_6()
+                    elif c == ord('7'):
+                        self.handle_key_7()
                     elif c == ord('q'):  # Exit on 'q'
                         break
                     # self.pub_arm()
@@ -189,6 +261,22 @@ class SpiderKeyboardController(Node):
         self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(FORWARD_ACTION["3"])
         self.pub_arm()
 
+    def handle_key_4(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["0"])
+        self.pub_arm()
+    def handle_key_5(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["1"])
+        self.pub_arm()
+    def handle_key_6(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["2"])
+        self.pub_arm()
+    def handle_key_7(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["3"])
+        self.pub_arm()
     def handle_key_b(self):
         self.stdscr.addstr(f"spider return to origin state...")
         self.joint_pos = self.standing_pos
