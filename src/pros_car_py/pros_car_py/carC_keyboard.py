@@ -207,7 +207,7 @@ class CarCKeyboardController(Node):
         pass
 
     def handle_key_e(self, vel: float = 10):
-        self.stdscr.addstr(f"car go clockwise")
+        self.stdscr.addstr(f"car go CW")
         self._vel1 = -self.rotate_speed  # rad/s
         self._vel2 = self.rotate_speed  # rad/s
         self._vel3 = -self.rotate_speed  # rad/s
@@ -215,7 +215,7 @@ class CarCKeyboardController(Node):
         pass
 
     def handle_key_r(self, vel: float = 10):
-        self.stdscr.addstr(f"car go counterclockwise")
+        self.stdscr.addstr(f"car go CCW")
         self._vel1 = self.rotate_speed  # rad/s
         self._vel2 = -self.rotate_speed  # rad/s
         self._vel3 = self.rotate_speed  # rad/s

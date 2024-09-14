@@ -87,18 +87,78 @@ _REDIRECT_ROUTINE_ANGLES: dict[str, float] = {
     "calf_back": math.radians(-30)
 }
 
-REDIRECT_ACTION: dict[str, list[float]] = {
+CW_ACTION: dict[str, list[float]] = {
+    "0": [
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
+
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
+
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0
+    ],
+
+    "1": [
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
+        0, 0,
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"],
+        0, 0,
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"]
+
+    ],
+
+    "2": [
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
+
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
+
+       _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"]
+
+    ],
+
+    "3": [
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
+
+        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"],
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
+        0, 0,
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"],
+        0, 0
+    ]  
+}
+
+CCW_ACTION: dict[str, list[float]] = {
     "0": [
         _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
-        0, 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
 
         _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
-        0, 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
 
-        0, 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
         _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
 
-        0, 0,
+        0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
         _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0
     ],
 
@@ -119,30 +179,30 @@ REDIRECT_ACTION: dict[str, list[float]] = {
 
     "2": [
         0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
-        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
 
         0, _REDIRECT_ROUTINE_ANGLES["calf_back"],
-        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
 
-        0, 0,
+       _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], 0,
         0, _REDIRECT_ROUTINE_ANGLES["calf_front"],
 
-        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], 0,
         0, _REDIRECT_ROUTINE_ANGLES["calf_back"]
 
     ],
 
     "3": [
         0, 0,
-        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
 
         0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"],
+
+        _REDIRECT_ROUTINE_ANGLES["shoulder_abduction"], _REDIRECT_ROUTINE_ANGLES["calf_front"],
         0, 0,
 
-        0, 0,
-        0, 0,
-
-        0, 0,
+        _REDIRECT_ROUTINE_ANGLES["shoulder_adduction"], _REDIRECT_ROUTINE_ANGLES["calf_back"],
         0, 0
     ]  
 }
@@ -192,14 +252,24 @@ class SpiderKeyboardController(Node):
                         self.handle_key_2()
                     elif c == ord('3'):
                         self.handle_key_3()
-                    elif c == ord('4'):
-                        self.handle_key_4()
-                    elif c == ord('5'):
-                        self.handle_key_5()
-                    elif c == ord('6'):
-                        self.handle_key_6()
-                    elif c == ord('7'):
-                        self.handle_key_7()
+
+                    elif c == ord('a'):
+                        self.handle_key_a()
+                    elif c == ord('s'):
+                        self.handle_key_s()
+                    elif c == ord('d'):
+                        self.handle_key_d()
+                    elif c == ord('f'):
+                        self.handle_key_f()
+
+                    elif c == ord('g'):
+                        self.handle_key_g()
+                    elif c == ord('h'):
+                        self.handle_key_h()
+                    elif c == ord('j'):
+                        self.handle_key_j()
+                    elif c == ord('k'):
+                        self.handle_key_k()
                     elif c == ord('q'):  # Exit on 'q'
                         break
                     # self.pub_arm()
@@ -261,21 +331,38 @@ class SpiderKeyboardController(Node):
         self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(FORWARD_ACTION["3"])
         self.pub_arm()
 
-    def handle_key_4(self):
+    def handle_key_a(self):
         self.stdscr.addstr(f"spider walk...")
-        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["0"])
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CCW_ACTION["0"])
         self.pub_arm()
-    def handle_key_5(self):
+    def handle_key_s(self):
         self.stdscr.addstr(f"spider walk...")
-        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["1"])
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CCW_ACTION["1"])
         self.pub_arm()
-    def handle_key_6(self):
+    def handle_key_d(self):
         self.stdscr.addstr(f"spider walk...")
-        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["2"])
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CCW_ACTION["2"])
         self.pub_arm()
-    def handle_key_7(self):
+    def handle_key_f(self):
         self.stdscr.addstr(f"spider walk...")
-        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(REDIRECT_ACTION["3"])
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CCW_ACTION["3"])
+        self.pub_arm()
+
+    def handle_key_g(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CW_ACTION["0"])
+        self.pub_arm()
+    def handle_key_h(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CW_ACTION["1"])
+        self.pub_arm()
+    def handle_key_j(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CW_ACTION["2"])
+        self.pub_arm()
+    def handle_key_k(self):
+        self.stdscr.addstr(f"spider walk...")
+        self.joint_pos = spider_utils.convert_human_to_unity_spider_joint_angles(CW_ACTION["3"])
         self.pub_arm()
     def handle_key_b(self):
         self.stdscr.addstr(f"spider return to origin state...")

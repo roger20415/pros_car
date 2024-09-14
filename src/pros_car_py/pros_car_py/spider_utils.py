@@ -21,8 +21,8 @@ def convert_human_to_unity_spider_joint_angles(human_spider_angles: list[float])
         A list of 16 angles formatted for Unity.
         
         Facing the spider in Unity:
-        - For the 4 front shoulder joints, positive angle values indicate counterclockwise rotation.
-        - For the 4 back shoulder joints, positive angle values indicate clockwise rotation.
+        - For the 4 front shoulder joints, positive angle values indicate CCW rotation.
+        - For the 4 back shoulder joints, positive angle values indicate CW rotation.
         - For the 4 left calf joints, positive angle values indicate backward extension.
         - For the 4 right calf joints, positive angle values indicate forward extension.
     
